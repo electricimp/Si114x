@@ -196,7 +196,7 @@ class Si1145 {
             return 0;
         }
 
-        // Convert Hz to 31.25ms
+        // Convert Hz to 31.25us ticks
         local rate = (32000.0/dataRate).tointeger();
         // clamp it to allowed values
         if (rate < 0) rate = 0;
@@ -226,8 +226,8 @@ class Si1145 {
         // Read the current MEAS_RATE registers
         local rate = _read16(REG_MEAS_RATE1, REG_MEAS_RATE0)
 
-        // Set our _rate variable
-        _measRate = 1.0 / (rate * 0.00003125);
+        // Convert 31.25us ticks to Hz and set _measRate
+        _measRate = 32000.0/rate;
 
         // Convert MEAS Rate to Hz
         return _measRate;
