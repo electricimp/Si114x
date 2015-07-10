@@ -67,7 +67,9 @@ class Si1145 {
 
     // Data Ready Channel Masks
     static DRDY_ALS         = 0x01; // 00000001
-    static DRDY_PS1         = 0x04; // 00000100
+    static DRDY_PS1         = 0x04; // Datasheet name
+    static DRDY_PROXIMITY   = 0x04; // External name
+
 
     _i2c    = null;
     _addr   = null;
@@ -86,11 +88,6 @@ class Si1145 {
 
         // Initialize the device
         init();
-    }
-
-    function init() {
-        // Send Hardware Key
-        _writeReg(REG_HW_KEY, 0x17);
     }
 
     // Enables ALS (visible light, ir light, uv index) sensing
@@ -153,10 +150,10 @@ class Si1145 {
     // Gets last proximity (ps1)
     function getProximity(cb) {
         // Read the proximity value
-        local proximity = _read16(REG_PS1_DATA1, REG_PS1_DATA0);
+        local ps1 = _read16(REG_PS1_DATA1, REG_PS1_DATA0);
 
         // Invoke the callback
-        imp.wakeup(0, function() { cb({ "proximity": proximity }); });
+        imp.wakeup(0, function() { cb({ "proximity": ps1 }); });
     }
 
     // Forces a proximity read (if datarate == 0)
@@ -164,12 +161,9 @@ class Si1145 {
         // Send the force PS command
         _writeReg(REG_COMMAND, CMD_PS_FORCE);
 
-        // Copy of 'this' to use in callback without having to bindenv
-        local __si1145 = this;
+        imp.sleep(0.05);
         // Invoke the callback after a short period of time
-        imp.wakeup(0.05, function() {
-            __si1145.getProximity(cb);
-        });
+        imp.wakeup(0, function() { getProximity(cb); }.bindenv(this));
     }
 
     // Forces an ALS read (for when datarate == 0)
@@ -177,13 +171,9 @@ class Si1145 {
         // Send the force ALS command
         _writeReg(REG_COMMAND, CMD_ALS_FORCE);
 
-        // Copy of 'this' to use in callback without having to bindenv
-        local __si1145 = this;
-
+        imp.sleep(0.05);
         // Invoke the callback after a short period of time
-        imp.wakeup(0.05, function() {
-            __si1145.getALS(cb);
-        });
+        imp.wakeup(0, function() {getALS(cb); }.bindenv(this));
     }
 
     // Sets the MEAS Rate for ALS and PS in Hz
@@ -262,9 +252,15 @@ class Si1145 {
 
         // Return table with bits we care about
         return {
-            "als":      irqStatus & DRDY_ALS ? true : false
-            "ps1":      irqStatus & DRDY_PS1 ? true : false,
+            "als":          irqStatus & DRDY_ALS ? true : false
+            "proximity":    irqStatus & DRDY_PS1 ? true : false,
         };
+    }
+
+     function init() {
+        // Send Hardware Key
+        _writeReg(REG_HW_KEY, 0x17);
+        imp.sleep(0.01);
     }
 
     // Returns the PartID (should be 0x45)
