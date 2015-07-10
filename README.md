@@ -2,7 +2,7 @@
 
 The [Si114x](https://www.adafruit.com/datasheets/Si1145-46-47.pdf) is an I&sup2;c proximity, UV, and ambient light sensor. The Si114x library can be used with the Si1145, Si1146, and Si1147.
 
-The Si114x interfaces over I&sup2;C.
+The Si114x interfaces over I&sup2;C, and works best with the clock rate set at `CLOCK_SPEED_100_KHZ` or `CLOCK_SPEED_400_KHZ`.If lower clockrates are used, you may need to add `imp.sleep`s in the *forceRead\** callbacks.
 
 **To add this library to your project, add `#require "Si114x.class.nut:1.0.0"`` to the top of your device code.**
 
