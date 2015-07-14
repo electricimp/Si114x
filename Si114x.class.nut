@@ -1,4 +1,4 @@
-class Si1145 {
+class Si114x {
 
     static version = [1,0,0];
 
