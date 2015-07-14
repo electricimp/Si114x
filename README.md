@@ -184,7 +184,7 @@ als.enableProximity(true);
 
 // Get a 1-shot reading
 als.forceReadProximity(function(data) {
-    server.log("Proximity: " + data.p1);
+    server.log("Proximity: " + data.proximity);
 });
 
 ```
