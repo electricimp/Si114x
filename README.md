@@ -6,7 +6,7 @@ The Si114x interfaces over I&sup2;C, and works best with the clock rate set at `
 
 **To add this library to your project, add `#require "Si114x.class.nut:1.0.0"`` to the top of your device code.**
 
-You can view the library’s source code on [GitHub](github.com/electricimp/si114x/tree/v1.0.0).
+You can view the library’s source code on [GitHub](https://github.com/electricimp/Si114x/tree/v1.0.0).
 
 ## Class Usage
 
@@ -86,7 +86,7 @@ Collects the most recent data from the ALS sensor, and invokes the callback with
 
 **NOTE:** The uv value is returned as a [UV index](http://www2.epa.gov/sunwise/uv-index-scale) between 0 and 11.
 
-Before calling *getALS* you shoudl call *enableALS(true)* and *setDataRate(dataRateHz)* with a non-zero data rate. 
+Before calling *getALS* you shoudl call *enableALS(true)* and *setDataRate(dataRateHz)* with a non-zero data rate.
 
 ```squirrel
 #require "Si114x.class.nut:1.0.0"
