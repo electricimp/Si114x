@@ -1,10 +1,10 @@
-# Si1145/46/47 1.0.0
+# Si1145/46/47 #
 
 The [Si114x](https://www.adafruit.com/datasheets/Si1145-46-47.pdf) is an I&sup2;c proximity, UV, and ambient light sensor. The Si114x library can be used with the Si1145, Si1146, and Si1147.
 
 The Si114x interfaces over I&sup2;C, and works best with the clock rate set at `CLOCK_SPEED_100_KHZ` or `CLOCK_SPEED_400_KHZ`.If lower clockrates are used, you may need to add an `imp.sleep` at the beginning of your *forceRead** callbacks.
 
-**To add this library to your project, add `#require "Si114x.class.nut:1.0.0"`` to the top of your device code.**
+**To add this library to your project, add** `#require "Si114x.class.nut:1.0.0"` **to the top of your device code.**
 
 You can view the library’s source code on [GitHub](https://github.com/electricimp/Si114x/tree/v1.0.0).
 
@@ -13,7 +13,6 @@ You can view the library’s source code on [GitHub](https://github.com/electric
 ### Constructor: Si114x(*i2c, [addr]*)
 
 The class’ constructor takes one required parameter (a configured imp I&sup2;C bus) and an optional parameter (the I&sup2;C address of the sensor):
-
 
 | Parameter     | Type         | Default | Description |
 | ------------- | ------------ | ------- | ----------- |
@@ -77,14 +76,12 @@ server.log("Data Rate: " + als.getDataRate() + " Hz");
 Collects the most recent data from the ALS sensor, and invokes the callback with a single parameter - a table containing the following keys:
 
 ```squirrel
-{
-    "visible": int,     // The visible light (in lux)
-    "ir": int,          // The IR light (in lux)
-    "uv": float         // The UV Index
-}
+{ "visible": int,     // The visible light (in lux)
+  "ir": int,          // The IR light (in lux)
+  "uv": float }       // The UV Index
 ```
 
-**NOTE:** The uv value is returned as a [UV index](http://www2.epa.gov/sunwise/uv-index-scale) between 0 and 11.
+**Note** The uv value is returned as a [UV index](http://www2.epa.gov/sunwise/uv-index-scale) between 0 and 11.
 
 Before calling *getALS* you shoudl call *enableALS(true)* and *setDataRate(dataRateHz)* with a non-zero data rate.
 
@@ -100,12 +97,12 @@ als.setDataRate(2);    // 2Hz
 
 // Poll the ALS data every second
 function poll() {
-    imp.wakeup(1, poll);
-    als.getALS(function(data) {
-        server.log("Visible: " + data.visible);
-        server.log("IR Light: " + data.ir);
-        server.log("UV Index: " + data.uv);
-    });
+  imp.wakeup(1, poll);
+  als.getALS(function(data) {
+    server.log("Visible: " + data.visible);
+    server.log("IR Light: " + data.ir);
+    server.log("UV Index: " + data.uv);
+  });
 }
 
 poll();
@@ -116,9 +113,7 @@ poll();
 Collects the most recent data from the proximity sensor, and invokes the callback with a single parameter - a table containing the following keys:
 
 ```squirrel
-{
-    "proximity": int      // The proximity value 0 (far) to 65535 (near)
-}
+{ "proximity": int }      // The proximity value 0 (far) to 65535 (near)
 ```
 
 Before calling *getProximity* you should call *enableProximity(true)* and *setDataRate(dataRateHz)* with a non-zero data rate.
@@ -135,10 +130,10 @@ als.setDataRate(2);    // 2Hz
 
 // Poll the ALS data every second
 function poll() {
-    imp.wakeup(1, poll);
-    als.getProximity(function(data) {
-        server.log("Proximity: " + data.proximity);
-    });
+  imp.wakeup(1, poll);
+  als.getProximity(function(data) {
+    server.log("Proximity: " + data.proximity);
+  });
 }
 
 poll();
@@ -161,11 +156,10 @@ als.enableALS(true);
 
 // Get a 1-shot reading
 als.forceReadALS(function(data) {
-    server.log("Visible: " + data.visible);
-    server.log("IR Light: " + data.ir);
-    server.log("UV Index: " + data.uv);
+  server.log("Visible: " + data.visible);
+  server.log("IR Light: " + data.ir);
+  server.log("UV Index: " + data.uv);
 });
-
 ```
 
 ### forceReadProximity(*callback*)
@@ -184,9 +178,8 @@ als.enableProximity(true);
 
 // Get a 1-shot reading
 als.forceReadProximity(function(data) {
-    server.log("Proximity: " + data.proximity);
+  server.log("Proximity: " + data.proximity);
 });
-
 ```
 
 ### configureDataReadyInterrupt(*state, [channels]*)
@@ -206,21 +199,21 @@ als.configureDataReadyInterrupt(true, Si114x.DRDY_ALS | Si114x.DRDY_PROXIMITY);
 
 alsInt <- hardware.pinD;
 alsInt.configure(DIGITAL_IN, function() {
-    if (alsInt.read() == 1) return;
+  if (alsInt.read() == 1) return;
 
-    local state = als.getInterruptTable();
-    if (state.als) {
-        als.getALS(function(data) {
-            server.log("Visible: " + data.visible);
-            server.log("IR: " + data.ir);
-            server.log("UV: " + data.uv);
-        });
-    }
-    if (state.proximity) {
-        als.getProximity(function(data) {
-            server.log("Proximity: " + data.proximity);
-        });
-    }
+  local state = als.getInterruptTable();
+  if (state.als) {
+    als.getALS(function(data) {
+      server.log("Visible: " + data.visible);
+      server.log("IR: " + data.ir);
+      server.log("UV: " + data.uv);
+    });
+  }
+  if (state.proximity) {
+    als.getProximity(function(data) {
+      server.log("Proximity: " + data.proximity);
+    });
+  }
 });
 
 ```
@@ -230,10 +223,8 @@ alsInt.configure(DIGITAL_IN, function() {
 The *getInterruptTable* method reads and clears the interrupt source register and returns a table with the following keys:
 
 ```sqirrel
-{
-    "als": bool,        // True if new ALS data is available
-    "proximity": bool         // True if new proximity data is available
-}
+{ "als": bool,           // True if new ALS data is available
+  "proximity": bool }    // True if new proximity data is available
 ```
 
 See *configureDataReadyInterrupts* for sample usage.
